@@ -10,7 +10,7 @@ import org.springframework.web.client.RestTemplate;
 public class applicationConfigration {
 
 
-   @Bean
+    @Bean
     public RestTemplate createRestTemplate() {
         return new RestTemplate();
     }

@@ -9,17 +9,19 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.*;
+
 
 @Service
 public class fakeStoreServices implements productService {
 
     private RestTemplate restTemplate;
 
-    public fakeStoreServices(RestTemplate restTemplate){
+    public fakeStoreServices(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
     }
 
-    public Product getProductById (Integer id){
+    public Product getProductById(Integer id) {
 
         ResponseEntity<fakestoreResponseDTO> response = restTemplate.getForEntity("https://fakestoreapi.com/products/" + id, fakestoreResponseDTO.class);
         fakestoreResponseDTO fakestoreResponse = response.getBody();
@@ -28,9 +30,32 @@ public class fakeStoreServices implements productService {
     }
 
     @Override
-    public Product getAllProduct() {
-        return null;
+    public List<Product> getAllProduct() {
+
+        List<Product> productList = new ArrayList<>();
+
+        fakestoreResponseDTO[] response = restTemplate.getForObject("https://fakestoreapi.com/products/", fakestoreResponseDTO[].class);
+
+        for (fakestoreResponseDTO dto : response) {
+            productList.add(dto.toProduct());
+        }
+
+        return productList;
     }
+
+
+    @Override
+    public List<Product> getFetchAndSorted() {
+
+        List<Product> productList = new ArrayList<>();
+        fakestoreResponseDTO[] response = restTemplate.getForObject("https://fakestoreapi.com/products/", fakestoreResponseDTO[].class);
+        for (fakestoreResponseDTO dto : response) {
+            productList.add(dto.toProduct());
+        }
+
+        return productList;
+    }
+
 
     @Override
     public Product addProduct(String title, String description, String image, Double price) {
@@ -41,7 +66,7 @@ public class fakeStoreServices implements productService {
         requestBody.setImage(image);
         requestBody.setPrice(String.valueOf(price));
 
-        fakestoreResponseDTO response  =restTemplate.postForObject("https://fakestoreapi.com/products",requestBody, fakestoreResponseDTO.class);
+        fakestoreResponseDTO response = restTemplate.postForObject("https://fakestoreapi.com/products", requestBody, fakestoreResponseDTO.class);
 
         return response.toProduct();
     }

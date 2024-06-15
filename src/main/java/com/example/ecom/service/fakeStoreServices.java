@@ -3,9 +3,7 @@ package com.example.ecom.service;
 import com.example.ecom.dto.fakestoreResponseDTO;
 import com.example.ecom.model.Product;
 import org.springframework.context.annotation.Bean;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -24,9 +22,13 @@ public class fakeStoreServices implements productService {
     public Product getProductById(Integer id) {
 
         ResponseEntity<fakestoreResponseDTO> response = restTemplate.getForEntity("https://fakestoreapi.com/products/" + id, fakestoreResponseDTO.class);
-        fakestoreResponseDTO fakestoreResponse = response.getBody();
-        return fakestoreResponse.toProduct();
 
+        if (response.getStatusCode() != HttpStatus.OK || response.getBody() == null)  {
+            return null;
+        }
+        fakestoreResponseDTO fakestoreResponse = response.getBody();
+
+        return fakestoreResponse.toProduct();
     }
 
     @Override

@@ -4,9 +4,13 @@ import com.example.ecom.configration.productControllerComparator;
 import com.example.ecom.dto.addProductFakeStoreDTO;
 import com.example.ecom.dto.fakestoreResponseDTO;
 import com.example.ecom.dto.productResponseDTO;
+import com.example.ecom.exception.productNotFoundException;
 import com.example.ecom.model.Product;
 import com.example.ecom.service.productService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -28,14 +32,21 @@ public class productController {
 
 
     @GetMapping("/product/{id}")
-    public productResponseDTO getProductById(@PathVariable("id") int id) {
+    public ResponseEntity<productResponseDTO > getProductById(@PathVariable("id") int id) throws productNotFoundException {
 
         //need to do conversion here from Product to DTO
         Product product = pService.getProductById(id);
         productResponseDTO productDTO;
 
+        if(product==null) {
+            throw new productNotFoundException("Some error Occured here");
+
+//            return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+        }
         productDTO = convertProductToResponseDTO(product);
-        return productDTO;
+        return new ResponseEntity<>(productDTO, HttpStatus.OK);
+
+
     }
 
 

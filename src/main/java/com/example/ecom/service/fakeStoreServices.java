@@ -10,7 +10,7 @@ import org.springframework.web.client.RestTemplate;
 import java.util.*;
 
 
-@Service
+@Service("fakeStoreServices")
 public class fakeStoreServices implements productService {
 
     private RestTemplate restTemplate;
@@ -60,7 +60,7 @@ public class fakeStoreServices implements productService {
 
 
     @Override
-    public Product addProduct(String title, String description, String image, Double price) {
+    public Product addProduct(String title, String description, String image, Double price, String category) {
 
         fakestoreResponseDTO requestBody = new fakestoreResponseDTO();
         requestBody.setTitle(title);

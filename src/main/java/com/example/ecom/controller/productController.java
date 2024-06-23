@@ -4,10 +4,12 @@ import com.example.ecom.configration.productControllerComparator;
 import com.example.ecom.dto.addProductFakeStoreDTO;
 import com.example.ecom.dto.fakestoreResponseDTO;
 import com.example.ecom.dto.productResponseDTO;
+import com.example.ecom.exception.categoryNotFoundException;
 import com.example.ecom.exception.productNotFoundException;
 import com.example.ecom.model.Product;
 import com.example.ecom.service.productService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
@@ -25,7 +27,7 @@ public class productController {
     private productService pService;
     private productControllerComparator pcc;
 
-    public productController(productService pService, productControllerComparator pcc) {
+    public productController(@Qualifier("selfProductService") productService pService, productControllerComparator pcc) {
         this.pService = pService;
         this.pcc = pcc;
     }
@@ -51,13 +53,14 @@ public class productController {
 
 
     @PostMapping("/addProduct")
-    public Product createProduct(@RequestBody addProductFakeStoreDTO dto) {
+    public Product createProduct(@RequestBody addProductFakeStoreDTO dto) throws categoryNotFoundException {
 
         Product p = pService.addProduct(
                 dto.getTitle(),
                 dto.getDescription(),
                 dto.getImage(),
-                dto.getPrice());
+                dto.getPrice(),
+                dto.getCategory());
 
         return p;
     }

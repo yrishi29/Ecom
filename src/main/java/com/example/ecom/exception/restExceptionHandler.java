@@ -21,4 +21,14 @@ public class restExceptionHandler {
 
     }
 
+
+    @ExceptionHandler(categoryNotFoundException.class)
+    public ResponseEntity categoryNotFoundException(){
+
+        errorDTO edto = new errorDTO(400, "No Category Found", new Date());
+
+        return  new ResponseEntity<errorDTO>(edto,HttpStatus.BAD_REQUEST);
+
+    }
+
 }
